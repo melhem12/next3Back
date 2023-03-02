@@ -383,7 +383,8 @@ List<MyBaseResponse> myBaseResponses = new ArrayList<>();
                     carsInsuranceEmployee.setUsersBranchId(addUserRequest.getCompanyId() + "." + addUserRequest.getBranchId());
                     carsInsuranceEmployee.setInsuranceEmployeeId(addUserRequest.getCompanyId() + "." + addUserRequest.getBranchId() + "." + addUserRequest.getUserName());
                     carsInsuranceEmployee.setSysCreatedDate(LocalDateTime.now());
-
+                    carsInsuranceEmployee.setUserLimitTaxiFees(addUserRequest.getUserLimitTaxiFees());
+                    carsInsuranceEmployee.setUsersBranch(new BigDecimal(addUserRequest.getBranchId()));
                     carsInsuranceEmployee.setUserLimitLawyerFees(addUserRequest.getUserLimitLawyerFees());
                     carsInsuranceEmployee.setUserLimitDoctorFees(addUserRequest.getUserLimitDoctorFees());
                     carsInsuranceEmployee.setUserLimitHospitalFees(addUserRequest.getUserLimitHospitalFees());
@@ -471,6 +472,7 @@ List<MyBaseResponse> myBaseResponses = new ArrayList<>();
                         carsInsuranceEmployee.setUsersInsurance(new BigDecimal(editUserRequest.getCompanyId()));
                         carsInsuranceEmployee.setUsersBranchId(editUserRequest.getCompanyId() + "." + editUserRequest.getBranchId());
                         carsInsuranceEmployee.setInsuranceEmployeeId(editUserRequest.getCompanyId() + "." + editUserRequest.getBranchId() + "." + editUserRequest.getUserName());
+                        carsInsuranceEmployee.setUserLimitTaxiFees(editUserRequest.getUserLimitTaxiFees());
 
                         carsInsuranceEmployee.setUserLimitLawyerFees(editUserRequest.getUserLimitLawyerFees());
                         carsInsuranceEmployee.setUserLimitDoctorFees(editUserRequest.getUserLimitDoctorFees());
@@ -479,6 +481,7 @@ List<MyBaseResponse> myBaseResponses = new ArrayList<>();
                         carsInsuranceEmployee.setUserLimitSurveyFees(editUserRequest.getUserLimitSurveyFees());
                         carsInsuranceEmployee.setUserLimitExceedPercentage(editUserRequest.getUserLimitExceedPercentage());
                         carsInsuranceEmployee.setUsersLimit(editUserRequest.getPaymentLimit());
+                        carsInsuranceEmployee.setUsersBranch(new BigDecimal(editUserRequest.getBranchId()));
 
                         carsInsuranceEmployee.setSysUpdatedDate(LocalDateTime.now());
 
@@ -609,9 +612,8 @@ List<MyBaseResponse> myBaseResponses = new ArrayList<>();
                            userInfo.setUserLimitTaxiFees(carsInsuranceEmployee.getUserLimitTaxiFees());
                            userInfo.setUserLimitExpertFees(carsInsuranceEmployee.getUserLimitExpertFees());
                            userInfo.setUserLimitExceedPercentage(carsInsuranceEmployee.getUserLimitExceedPercentage());
-                           if(carsInsuranceEmployee.getUsersBranchId().isEmpty()&&carsInsuranceEmployee.getUsersBranchId()!=null){
-                           userInfo.setBranchId(carsInsuranceEmployee.getUsersBranchId().split(".")[1]);
-                           }
+                               userInfo.setBranchId(carsInsuranceEmployee.getUsersBranch().toString());
+
 
                        },
                        ()->{
@@ -688,9 +690,8 @@ List<MyBaseResponse> myBaseResponses = new ArrayList<>();
                                     userInfo.setUserLimitTaxiFees(carsInsuranceEmployee.getUserLimitTaxiFees());
                                     userInfo.setUserLimitExpertFees(carsInsuranceEmployee.getUserLimitExpertFees());
                                     userInfo.setUserLimitExceedPercentage(carsInsuranceEmployee.getUserLimitExceedPercentage());
-                                    if(carsInsuranceEmployee.getUsersBranchId().isEmpty()&&carsInsuranceEmployee.getUsersBranchId()!=null){
-                                        userInfo.setBranchId(carsInsuranceEmployee.getUsersBranchId().split(".")[1]);
-                                    }
+                                        userInfo.setBranchId(carsInsuranceEmployee.getUsersBranch().toString());
+
 
                                 },
                                 ()->{
