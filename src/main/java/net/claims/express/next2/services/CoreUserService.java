@@ -612,8 +612,9 @@ List<MyBaseResponse> myBaseResponses = new ArrayList<>();
                            userInfo.setUserLimitTaxiFees(carsInsuranceEmployee.getUserLimitTaxiFees());
                            userInfo.setUserLimitExpertFees(carsInsuranceEmployee.getUserLimitExpertFees());
                            userInfo.setUserLimitExceedPercentage(carsInsuranceEmployee.getUserLimitExceedPercentage());
+                           if(carsInsuranceEmployee.getUsersBranch()!=null) {
                                userInfo.setBranchId(carsInsuranceEmployee.getUsersBranch().toString());
-
+                           }
 
                        },
                        ()->{
@@ -690,8 +691,10 @@ List<MyBaseResponse> myBaseResponses = new ArrayList<>();
                                     userInfo.setUserLimitTaxiFees(carsInsuranceEmployee.getUserLimitTaxiFees());
                                     userInfo.setUserLimitExpertFees(carsInsuranceEmployee.getUserLimitExpertFees());
                                     userInfo.setUserLimitExceedPercentage(carsInsuranceEmployee.getUserLimitExceedPercentage());
-                                        userInfo.setBranchId(carsInsuranceEmployee.getUsersBranch().toString());
+                                    if(carsInsuranceEmployee.getUsersBranch()!=null) {
 
+                                        userInfo.setBranchId(carsInsuranceEmployee.getUsersBranch().toString());
+                                    }
 
                                 },
                                 ()->{
