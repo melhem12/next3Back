@@ -14,6 +14,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 @RestController
@@ -22,26 +24,19 @@ import java.util.*;
 
 @RequestMapping("api/basicAuth")
 public class ValidateUserController {
-
     @Autowired
     JWTService jwtService;
 
-
-
-
-    //start from melhem
-
-    //end from melhem
-
-    @RequestMapping(value = "validate")
-    public ApiResponse userIsValid() {
+    @RequestMapping("validate")
+    public  Map<String, String> userIsValid(HttpServletResponse response) {
         System.out.println("@Validate controller....");
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("coming user::"   + auth.getPrincipal());
+        System.out.println("@ValidateUserController(/validate endpoint) => coming user::"   + auth.getPrincipal());
         SecurityUser currentUser = (SecurityUser)auth.getPrincipal();
         String name = currentUser.getUsername();
-        System.out.println("@Controller: username ==> " + name);
+        System.out.println("@ValidateUserController(/validate endpoint) =>: username ==> " + name);
 
+        //needed if we want to specify authority names in the token
         List<String> loginUserAuthoritiesNames = new ArrayList<>();
 
         for (GrantedAuthority authority: currentUser.getAuthorities()) {
@@ -49,27 +44,31 @@ public class ValidateUserController {
         }
 
         //getting corecompany profiles:
-       CoreUser coreUser = currentUser.getCoreUser();
-        System.out.println("listing my profiles:");
+        CoreUser coreUser = currentUser.getCoreUser();
+        System.out.println("@ValidateUserController(/validate endpoint) => listing my profiles:");
         List<CoreCompanyProfile> myCompanyProfiles = coreUser.getProfiles();
 
         //preparing EMPTY array list to hold profiles that I can use within my company
         List<CoreProfile> myProfiles = new ArrayList<>();
 
+        //needed if we want to specify  names of profiles a user enrolled in to be in the token
+//        List<String> enrolledProfilesNames = new ArrayList<>();
+
         for(CoreCompanyProfile companyProfile: myCompanyProfiles) {
-            System.out.println("@PROFILE => " + companyProfile.getId());
+            System.out.println("@ValidateUserController(/validate endpoint) => @PROFILE => " + companyProfile.getId());
 
             CoreProfile coreProfile = companyProfile.getCoreProfile();
+
             //now inject roles for this user for this core profile:
             Set<CoreRole> roles_per_profile =  currentUser.getUserRolesPerProfile().get(coreUser.getCompany_id() + "." +  coreProfile.getId());
             coreProfile.setRoles(roles_per_profile);
             myProfiles.add(coreProfile);
         }
 
-        System.out.println("FINAL TESTING###");
-        System.out.println("for each company profile, list roles that user: " + coreUser.getId() + " has:");
+        System.out.println("@ValidateUserController(/validate endpoint) => FINAL TESTING###");
+        System.out.println("@ValidateUserController(/validate endpoint) ==>  for each company profile, list roles that user: " + coreUser.getId() + " has:");
         //TESTING DATA:::
-        for (CoreProfile p: myProfiles) {
+       /*for (CoreProfile p: myProfiles) {
             System.out.println("PROFILE: " +p.getDescription() + ", user:  " + coreUser.getId() + " has the following roles:");
             System.out.println("----------");
             for (CoreRole r: p.getProfileRoles()) {
@@ -80,25 +79,48 @@ public class ValidateUserController {
         System.out.println("authoriteis for user: " + name);
         for(String authority : loginUserAuthoritiesNames) {
             System.out.println("authority: " + authority);
-        }
+        }*/
 
         //generate token using configured jwtToken Service:
         String token = this.jwtService.generateToken(name, loginUserAuthoritiesNames);
-
+        System.out.println("@ValidateUserController(/validate endpoint) => TOKEN VALUE:::" + token);
+        //cookie:
+        Cookie cookie = new Cookie("token", token);
+        cookie.setPath("/next2");
+        cookie.setHttpOnly(true); //doing that => WE CANNOT REFERENCE THIS COOKIE IN JAVASCRIPT(IMPORTANT IN SECURITY)
+        cookie.setMaxAge(1800);
+        //TODO: When in production  must do cookie.setSecure(true)
+        //TODO:  cookie.setSecure(true); //=>this cookie should only be sent over SSL(when we deploy our app)
+        response.addCookie(cookie);
+        //end cookie
         Map<String, String> results = new HashMap<>();
-        results.put("results", token);
+        results.put("results", "ok");
 
 //        return myProfiles;
-//        return results;
-   //     return "{\"result\": \"ok\", \"name\": \"ok\"}";
-        Map<String, Object> afterLogin_data = new HashMap<>();
-        afterLogin_data.put("token", token);
+        return results;
+        //     return "{\"result\": \"ok\", \"name\": \"ok\"}";
+        //1    Map<String, Object> afterLogin_data = new HashMap<>();
+//    1    afterLogin_data.put("token", token);
 //        afterLogin_data.put("profiles", myProfiles);
-       return new  ApiResponse(StatusCode.OK.getCode(), "success", "login data", afterLogin_data);
+        //1     return new  ApiResponse(StatusCode.OK.getCode(), "success", "login data", afterLogin_data);
     }
 
     @RequestMapping("ok")
     public String testingEndpoint() {
         return "testing okay (y)";
     }
+
+    @GetMapping("/logout")
+    public String logOut(HttpServletResponse resp) {
+        Cookie cookie = new Cookie("token", null);
+        cookie.setPath("/next2");
+        cookie.setHttpOnly(true); //doing that => WE CANNOT REFERENCE THIS COOKIE IN JAVASCRIPT(IMPORTANT IN SECURITY)
+        cookie.setMaxAge(0);
+        //TODO: When in production  must do cookie.setSecure(true)
+//		cookie.setSecure(true); //=>this cookie should only be sent over SSL(when we deploy our app)
+        resp.addCookie(cookie);
+        SecurityContextHolder.getContext().setAuthentication(null);//not any authenticated user
+        return "";
+    }
+
 }

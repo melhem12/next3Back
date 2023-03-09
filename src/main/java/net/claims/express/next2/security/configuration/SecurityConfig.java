@@ -41,13 +41,13 @@ public class SecurityConfig {
 
         //Requirements for BASIC AUTHENTICATION part
         http.cors().and().csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
+//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
                 .httpBasic().and() //rs: 15-2-23(added)
-                .authenticationManager(authManager)
-//                .userDetailsService(jpaUserDetailsService) todo check later
+                .authenticationManager(authManager) //overriding the default AuthenticationManager
+//                .userDetailsService(jpaUserDetailsService) todo if we want to override just the default UserDetailsService
                 .authorizeRequests().
-                antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .antMatchers("/api/basicAuth/**").permitAll();
+                mvcMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
+                .mvcMatchers("/api/basicAuth/**").authenticated();
 //     rs: 15-2-23:::.and().httpBasic().and().addFilterAfter(up_authentication_filter, UsernamePasswordAuthenticationFilter.class);
         //cors configuration didn't work, solution add configuration file CORSConfig:
         /*http.cors(c -> {
@@ -69,7 +69,9 @@ public class SecurityConfig {
         //commenting out jwt part: (temporary) //
         // jwt part:
         http.csrf().disable().authorizeRequests()
-                .mvcMatchers("/hello").hasAuthority("dmDataEntry") //for demo
+                .mvcMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
+                .mvcMatchers("/api/user/**").permitAll()
+                .mvcMatchers("/api/call_center/hello").hasAuthority("dmDataEntry") //for demo
                 .mvcMatchers("/demo").hasAuthority("dmDataEntry_test") //for demo
                 .mvcMatchers("/getNotificationSearch").hasAuthority("dmSaveDataEntry") //for demo
                 .and().addFilter(new JWTAuthorizationFilter(this.authManager));

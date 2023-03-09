@@ -471,7 +471,7 @@ List<MyBaseResponse> myBaseResponses = new ArrayList<>();
                         carsInsuranceEmployee.setUsersBranch(new BigDecimal(editUserRequest.getBranchId()));
                         carsInsuranceEmployee.setUsersInsurance(new BigDecimal(editUserRequest.getCompanyId()));
                         carsInsuranceEmployee.setUsersBranchId(editUserRequest.getCompanyId() + "." + editUserRequest.getBranchId());
-                        carsInsuranceEmployee.setInsuranceEmployeeId(editUserRequest.getCompanyId() + "." + editUserRequest.getBranchId() + "." + editUserRequest.getUserName());
+                        //carsInsuranceEmployee.setInsuranceEmployeeId(editUserRequest.getCompanyId() + "." + editUserRequest.getBranchId() + "." + editUserRequest.getUserName());
                         carsInsuranceEmployee.setUserLimitTaxiFees(editUserRequest.getUserLimitTaxiFees());
 
                         carsInsuranceEmployee.setUserLimitLawyerFees(editUserRequest.getUserLimitLawyerFees());
@@ -510,6 +510,7 @@ List<MyBaseResponse> myBaseResponses = new ArrayList<>();
                                 apiResponse.setStatusCode(StatusCode.OK.getCode());
                                 apiResponse.setMessage("User edited.");
                                 apiResponse.setTitle("success");
+                                apiResponse.setData(editUserRequest);
                             },
                             ()
                                     -> {
