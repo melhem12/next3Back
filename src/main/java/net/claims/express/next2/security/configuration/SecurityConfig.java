@@ -73,7 +73,7 @@ public class SecurityConfig {
                 .mvcMatchers("/api/user/**").permitAll()
                 .mvcMatchers("/api/call_center/hello").hasAuthority("dmDataEntry") //for demo
                 .mvcMatchers("/demo").hasAuthority("dmDataEntry_test") //for demo
-                .mvcMatchers("/getNotificationSearch").hasAuthority("dmSaveDataEntry") //for demo
+//                .mvcMatchers("/getNotificationSearch").hasAuthority("dmSaveDataEntry") //for demo
                 .and().addFilter(new JWTAuthorizationFilter(this.authManager));
 //         return http.build();
         return http.build();

@@ -109,7 +109,11 @@ private ApiResponse getDirections (){
 	}
 
 
-@GetMapping("/getPolicyType")
+	/**
+	 * this method returns
+	 * @return
+	 */
+	@GetMapping("/getPolicyType")
 private ApiResponse getPolicyType (){
 	ApiResponse  response= constantService.getPolicyType();
 	return response;

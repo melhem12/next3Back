@@ -115,16 +115,26 @@ public class CoreUserService extends BaseService<CoreUser> {
         String companyId = employeeInfo.getInsuranceEmployeeId().substring(0, employeeInfo.getInsuranceEmployeeId().indexOf("."));
 
         List<CoreCompanyProfile> unGrantedCompanyProfiles = new ArrayList<>();
+
         List<CoreProfile> unGrantedProfiles = new ArrayList<>();
-List<MyBaseResponse> myBaseResponses = new ArrayList<>();
+
+        List<MyBaseResponse> myBaseResponses = new ArrayList<>();
         List<CoreProfile> companyProfiles = this.companyProfileService.getProfilesByCompany(companyId);
 //        List<CoreUserProfile> registeredProfiles = this.coreUserProfileService.getUserProfiles(userId);
+
         List<String> registeredProfiles =new ArrayList<>();
-                this.coreUserProfileService.getUserProfiles(userId).forEach( p -> {
+        List<CoreUserProfile> test = this.coreUserProfileService.getUserProfiles(userId);
+        System.out.println(companyId);
+                if(this.coreUserProfileService.getUserProfiles(userId).size() == 0) {
+                    unGrantedCompanyProfiles = this.coreCompanyProfileRepository.findByCoreCompanyId(companyId);
+
+                }else{                this.coreUserProfileService.getUserProfiles(userId).forEach( p -> {
                     String companyProfile = p.getCoreCompanyProfileId();
                     registeredProfiles.add(companyProfile.substring(companyProfile.indexOf(".") + 1));
-        });
-        unGrantedCompanyProfiles = this.coreCompanyProfileRepository.findByCoreCompanyIdAndNotWithinUserProfiles(companyId, registeredProfiles);
+                });
+                    unGrantedCompanyProfiles = this.coreCompanyProfileRepository.findByCoreCompanyIdAndNotWithinUserProfiles(companyId, registeredProfiles);
+                }
+
        unGrantedCompanyProfiles.forEach( p -> {
            String company_profile_id = p.getId();
            unGrantedProfiles.add(this.profileService.findById(company_profile_id.substring(company_profile_id.indexOf(".") + 1)).get());

@@ -20,7 +20,7 @@ public class CallCenterController {
         return "abc";
     }
 
-    //second endpoint:
+    //secured endpoint:
     @GetMapping("/hello")
     public String hello() {
         return "Hello";
@@ -33,9 +33,7 @@ public class CallCenterController {
                                                                                @RequestParam(name = "admin", required = true)String admin,
                                                                                @RequestParam(name = "value",required = true)String value) {
         ApiResponse notifications= callCenterService.getNotificationSearch(type,value,cmp,admin);
-
        return  notifications;
-
 
     }
 

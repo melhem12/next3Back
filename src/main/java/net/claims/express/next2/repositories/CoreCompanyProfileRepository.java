@@ -17,4 +17,9 @@ public interface CoreCompanyProfileRepository extends BaseRepository<CoreCompany
             "   p.id not in ?2")
     public List<CoreCompanyProfile> findByCoreCompanyIdAndNotWithinUserProfiles(String companyId, List<String> profileIds);
 
+
+    @Query(value = "select cp from CoreCompanyProfile cp join fetch " +
+            "cp.coreCompany c join fetch cp.coreProfile p  where c.id = ?1  "
+           )
+    public List<CoreCompanyProfile> findByCoreCompanyId(String companyId);
 }
