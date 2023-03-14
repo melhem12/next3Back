@@ -19,12 +19,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
-import javax.swing.text.html.Option;
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CoreUserService extends BaseService<CoreUser> {
@@ -275,6 +275,98 @@ public class CoreUserService extends BaseService<CoreUser> {
         Optional<CoreProfile> checkProfile = this.profileService.findById(profileId);
         CoreProfile profile = checkProfile.orElseThrow(() -> new BadRequestException("profile of ID: " + profileId + " doesn't exist"));
         return profile;
+    }
+
+    public ApiResponse cloneProfilesAnRoles( String sourceUserId, String destinationUserId ,List<String> profiles,String currentUser){
+        ApiResponse apiResponse = new ApiResponse();
+        List<CoreUserProfile>    coreUserProfilesDest =coreUserProfileService.getUserProfiles(destinationUserId);
+        List<CoreUserProfile>    coreUserProfilesSrc =coreUserProfileService.getUserProfiles(sourceUserId);
+
+        List<CoreUserProfile> coreUserProfileUpdated = new ArrayList<>();
+        List<CoreUserProfile> coreUserProfileUpdatedCloned = new ArrayList<>();
+
+        Set<CoreUserProfile> coreUserProfileNew = new HashSet<>();
+
+//        profiles.forEach(profile->{
+//            coreUserProfiles.forEach( coreUserProfile -> {
+//                if(coreUserProfile.getId().equals(profile)){
+//                    coreUserProfileUpdated.add(coreUserProfile);
+//                }
+//
+//            });
+//
+//        });
+        coreUserProfilesDest.forEach(coreUserProfile->{
+            profiles.forEach(profile->{
+                if (coreUserProfile.getId().equals(profile)){
+                    coreUserProfileUpdated.add(coreUserProfile);
+
+                }
+
+            });
+
+        });
+
+
+        coreUserProfilesSrc.forEach(coreUserPro ->{
+            coreUserProfileUpdated.forEach(coreUserProfileUp->{
+                if(coreUserPro.getId().equals(coreUserProfileUp.getId())){
+                    coreUserProfileUpdatedCloned.add(coreUserPro);
+                }
+
+
+
+
+            });
+
+        } );
+        List<CoreUserProfile> newCoreUserProfileToAdd = coreUserProfilesSrc.stream()
+                .filter(item -> !coreUserProfileUpdated.contains(item))
+                .collect(Collectors.toList());
+
+
+
+
+
+
+
+        if(coreUserProfileUpdatedCloned.size()>0){
+            coreUserProfileUpdatedCloned.forEach( coreUserProfile -> {
+                Optional<CoreProfile> coreProfileOptional = db.coreProfileRepository.findById((coreUserProfile.getCoreCompanyProfileId().substring(coreUserProfile.getCoreCompanyProfileId().indexOf(".") + 1)).trim());
+                coreProfileOptional.ifPresent(coreProfile -> {
+                            updateRoles(destinationUserId,coreProfile);
+                    apiResponse.setStatusCode(StatusCode.OK.getCode());
+
+                        }
+
+                );
+
+            });
+        }
+  if(newCoreUserProfileToAdd.size()>0){
+      newCoreUserProfileToAdd.forEach(coreUserProfile -> {
+          Optional<CoreCompanyProfile> coreCompanyProfileOptional = coreCompanyProfileRepository.findById(coreUserProfile.getCoreCompanyProfileId()) ;
+          coreCompanyProfileOptional.ifPresent(coreCompanyProfile -> {
+              addUserProfile(destinationUserId,coreCompanyProfile,currentUser);
+
+          });
+
+
+                  Optional<CoreProfile> coreProfileOptional = db.coreProfileRepository.findById((coreUserProfile.getCoreCompanyProfileId().substring(coreUserProfile.getCoreCompanyProfileId().indexOf(".") + 1)).trim());
+                  coreProfileOptional.ifPresent(coreProfile -> {
+                      updateRoles(destinationUserId,coreProfile);
+
+                  });
+                  apiResponse.setStatusCode(StatusCode.OK.getCode());
+
+              }
+
+
+
+      );
+  }
+
+        return apiResponse;
     }
 
     @Transactional

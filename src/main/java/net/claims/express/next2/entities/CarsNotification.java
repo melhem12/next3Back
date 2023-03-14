@@ -98,8 +98,25 @@ public class CarsNotification extends BaseEntity implements Serializable {
 	
 	@Column(name = "NOTIFICATION_MAT_CHANGE_USER")
 	private java.lang.String notificationMatChangeUser;
-	
-	
+
+	@OneToOne(orphanRemoval = true, mappedBy = "carsNotification", cascade = { CascadeType.ALL })
+	@JoinColumn(name = "NOTIFICATION_ID")
+	private CarsLossTowing lossTowing;
+//
+//	public void assignPolicyCar(CarsPolicyCar policyCar) {
+//		setCarsPolicyCar(policyCar);
+//		String reportedName = "";
+//		lossTowing.getCarLossCarInsured().setCarShape(policyCar.getCarShape());
+//		lossTowing.getLossCarInsured().setCarPlate(policyCar.getCarPlate());
+//		lossTowing.getLossCarInsured().setCarYearManfact(policyCar.getCarYear());
+//		if (policyCar.getPolicy() != null && policyCar.getPolicy().getClient() != null) {
+//			lossTowing.getLossCarInsured().setCarOwnerFirstName(policyCar.getPolicy().getClient().getClientFirstName());
+//			lossTowing.getLossCarInsured().setCarOwnerFatherName(policyCar.getPolicy().getClient().getClientFatherName());
+//			lossTowing.getLossCarInsured().setCarOwnerFamilyName(policyCar.getPolicy().getClient().getClientFamilyName());
+//		}
+//
+//
+//	}
 	public CarsNotification() {
 		this.notificationId = UUID.randomUUID().toString();
 	}

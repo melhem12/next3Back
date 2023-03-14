@@ -5,6 +5,7 @@ import net.claims.express.next2.entities.CoreProfile;
 import net.claims.express.next2.entities.CoreUser;
 import net.claims.express.next2.http.StatusCode;
 import net.claims.express.next2.http.requests.AddUserRequest;
+import net.claims.express.next2.http.requests.CloneProfileRequest;
 import net.claims.express.next2.http.requests.EditUserRequest;
 import net.claims.express.next2.http.response.ApiResponse;
 import net.claims.express.next2.services.CoreCompanyService;
@@ -19,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/user")
 @Slf4j
-public class    CoreUserController {
+public class    CoreUserController  extends  BaseController{
 
     @Autowired
     private CoreUserService coreUserService;
@@ -107,7 +108,11 @@ public class    CoreUserController {
 
 
 
-
+    @PostMapping("/cloneProfile")
+    public ApiResponse cloneProfile (@RequestBody CloneProfileRequest cloneProfileRequest){
+        System.out.println("we are clone profile");
+        return this.coreUserService.cloneProfilesAnRoles(cloneProfileRequest.getSourceUserId(),cloneProfileRequest.getDestinationUserId(),cloneProfileRequest.getProfiles(),getCurrentUser().getCoreUser().getId() );
+    }
 
 
 

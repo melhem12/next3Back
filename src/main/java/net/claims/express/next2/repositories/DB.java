@@ -66,4 +66,7 @@ public class DB {
 
     @Autowired
     public CarsInsuranceEmployeeRepository carsInsuranceEmployeeRepository ;
+
+    @Autowired
+    public  CoreProfileRepository coreProfileRepository;
 }

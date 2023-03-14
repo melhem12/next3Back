@@ -55,15 +55,15 @@ public class CallCenterController {
     }
 
 
-
-    @PostMapping("/saveNotfication")
-    public ApiResponse createNotification () {
-     //   ApiResponse notifications= callCenterService.getNotificationSearch(type,value,cmp,admin);
-
-        return  null;
-
-
-    }
+//
+//    @PostMapping("/saveNotfication")
+//    public ApiResponse createNotification () {
+//     / ApiResponse notifications= callCenterService.addPolicyNotification();
+//
+//        return  null;
+//
+//
+//    }
 
 
 
