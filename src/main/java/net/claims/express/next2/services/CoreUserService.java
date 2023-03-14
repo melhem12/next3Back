@@ -298,20 +298,25 @@ public class CoreUserService extends BaseService<CoreUser> {
 //        });
         coreUserProfilesDest.forEach(coreUserProfile->{
             profiles.forEach(profile->{
-                if (coreUserProfile.getId().equals(profile)){
+                if (coreUserProfile.getCoreCompanyProfileId().equals(profile)){
                     coreUserProfileUpdated.add(coreUserProfile);
+                    System.out.println("already exist profile to update "+coreUserProfile.getCoreCompanyProfileId());
 
                 }
 
             });
 
         });
-
+        System.out.println(coreUserProfileUpdated.get(0).toString());
+        System.out.println(coreUserProfilesSrc.get(0).toString());
 
         coreUserProfilesSrc.forEach(coreUserPro ->{
             coreUserProfileUpdated.forEach(coreUserProfileUp->{
-                if(coreUserPro.getId().equals(coreUserProfileUp.getId())){
+                if(coreUserPro.getCoreCompanyProfileId().equals(coreUserProfileUp.getCoreCompanyProfileId())){
                     coreUserProfileUpdatedCloned.add(coreUserPro);
+                    System.out.println("clone "+coreUserProfileUp.getCoreCompanyProfileId());
+
+
                 }
 
 
@@ -336,7 +341,7 @@ public class CoreUserService extends BaseService<CoreUser> {
                 coreProfileOptional.ifPresent(coreProfile -> {
                             updateRoles(destinationUserId,coreProfile);
                     apiResponse.setStatusCode(StatusCode.OK.getCode());
-
+                    apiResponse.setTitle("role role");
                         }
 
                 );
@@ -357,7 +362,10 @@ public class CoreUserService extends BaseService<CoreUser> {
                       updateRoles(destinationUserId,coreProfile);
 
                   });
+
                   apiResponse.setStatusCode(StatusCode.OK.getCode());
+                  apiResponse.setTitle("profile cloned");
+
 
               }
 

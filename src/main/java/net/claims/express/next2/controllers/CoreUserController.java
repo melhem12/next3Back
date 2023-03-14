@@ -111,7 +111,9 @@ public class    CoreUserController  extends  BaseController{
     @PostMapping("/cloneProfile")
     public ApiResponse cloneProfile (@RequestBody CloneProfileRequest cloneProfileRequest){
         System.out.println("we are clone profile");
-        return this.coreUserService.cloneProfilesAnRoles(cloneProfileRequest.getSourceUserId(),cloneProfileRequest.getDestinationUserId(),cloneProfileRequest.getProfiles(),getCurrentUser().getCoreUser().getId() );
+       // return this.coreUserService.cloneProfilesAnRoles(cloneProfileRequest.getSourceUserId(),cloneProfileRequest.getDestinationUserId(),cloneProfileRequest.getProfiles(),getCurrentUser().getCoreUser().getId() );
+        return this.coreUserService.cloneProfilesAnRoles(cloneProfileRequest.getSourceUserId(),cloneProfileRequest.getDestinationUserId(),cloneProfileRequest.getProfiles(),"Test" );
+
     }
 
 
