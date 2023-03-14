@@ -330,6 +330,8 @@ public class CoreUserService extends BaseService<CoreUser> {
                 .collect(Collectors.toList());
 
 
+        System.out.println("to Add  "+newCoreUserProfileToAdd.get(0).getCoreCompanyProfileId());
+        System.out.println("to Add  "+newCoreUserProfileToAdd.get(0).getUserRoles());
 
 
 
@@ -339,7 +341,9 @@ public class CoreUserService extends BaseService<CoreUser> {
             coreUserProfileUpdatedCloned.forEach( coreUserProfile -> {
                 Optional<CoreProfile> coreProfileOptional = db.coreProfileRepository.findById((coreUserProfile.getCoreCompanyProfileId().substring(coreUserProfile.getCoreCompanyProfileId().indexOf(".") + 1)).trim());
                 coreProfileOptional.ifPresent(coreProfile -> {
-                            updateRoles(destinationUserId,coreProfile);
+                    System.out.println("core Roles .... to update   "+coreProfile.getProfileRoles());
+
+                    updateRoles(destinationUserId,coreProfile);
                     apiResponse.setStatusCode(StatusCode.OK.getCode());
                     apiResponse.setTitle("role role");
                         }
@@ -352,6 +356,8 @@ public class CoreUserService extends BaseService<CoreUser> {
       newCoreUserProfileToAdd.forEach(coreUserProfile -> {
           Optional<CoreCompanyProfile> coreCompanyProfileOptional = coreCompanyProfileRepository.findById(coreUserProfile.getCoreCompanyProfileId()) ;
           coreCompanyProfileOptional.ifPresent(coreCompanyProfile -> {
+              System.out.println("core profile .... to add   "+coreCompanyProfile.toString());
+
               addUserProfile(destinationUserId,coreCompanyProfile,currentUser);
 
           });
